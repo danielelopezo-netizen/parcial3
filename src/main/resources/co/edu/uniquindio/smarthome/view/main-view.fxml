@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="co.edu.uniquindio.smarthome.controller.MainViewController"
+            stylesheets="@styles.css"
+            prefHeight="800.0" prefWidth="1200.0" styleClass="main-container">
+
+    <!-- TOP BAR / HEADER -->
+    <top>
+        <VBox styleClass="header-bar">
+            <HBox alignment="CENTER_LEFT" spacing="15.0">
+                <padding>
+                    <Insets top="12.0" right="20.0" bottom="12.0" left="20.0"/>
+                </padding>
+
+                <!-- Titulo y Logo -->
+                <Label text="🏡 SmartHomeFX" styleClass="app-title"/>
+                <Label text="Sistema de Gestión y Automatización" styleClass="app-subtitle"/>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <!-- Badges de Estado General -->
+                <HBox spacing="10.0" alignment="CENTER">
+                    <Label fx:id="lblSecurityBadge" text="DESARMADO" styleClass="badge-security"/>
+                    <Label fx:id="lblEnergyStrategyBadge" text="🌱 Eco-Saver" styleClass="badge-energy"/>
+                    <Label fx:id="lblActiveDevices" text="0 / 0 Activos" styleClass="badge-neutral"/>
+                    <Label fx:id="lblPowerConsumption" text="0.0 W" styleClass="badge-power"/>
+                </HBox>
+
+                <Separator orientation="VERTICAL"/>
+
+                <!-- Botones Globales Deshacer / Rehacer (Patron Command) -->
+                <HBox spacing="6.0" alignment="CENTER">
+                    <Button fx:id="btnUndo" text="↩ Deshacer" onAction="#onUndoClicked" styleClass="btn-action"/>
+                    <Button fx:id="btnRedo" text="🔁 Rehacer" onAction="#onRedoClicked" styleClass="btn-action"/>
+                </HBox>
+            </HBox>
+        </VBox>
+    </top>
+
+    <!-- CENTER / CONTENIDO PRINCIPAL EN PESTAÑAS -->
+    <center>
+        <TabPane tabClosingPolicy="UNAVAILABLE" styleClass="custom-tabpane">
+
+            <!-- PESTAÑA 1: DISPOSITIVOS & HABITACIONES (COMPOSITE & FACTORY & ADAPTER) -->
+            <Tab text="📱 Dispositivos &amp; Zonas (Composite)">
+                <VBox spacing="15.0">
+                    <padding>
+                        <Insets top="15.0" right="20.0" bottom="15.0" left="20.0"/>
+                    </padding>
+
+                    <!-- Barra de Control de Habitaciones (Composite Control) -->
+                    <HBox spacing="12.0" alignment="CENTER_LEFT" styleClass="toolbar-panel">
+                        <padding>
+                            <Insets top="10.0" right="15.0" bottom="10.0" left="15.0"/>
+                        </padding>
+                        <Label text="Filtrar Zona:" styleClass="label-bold"/>
+                        <ComboBox fx:id="cmbRoomFilter" prefWidth="200.0"/>
+
+                        <Separator orientation="VERTICAL"/>
+
+                        <Label text="Control Grupal (Composite):" styleClass="label-bold"/>
+                        <Button fx:id="btnRoomTurnOn" text="⚡ Encender Todo" onAction="#onTurnRoomOn" styleClass="btn-success"/>
+                        <Button fx:id="btnRoomTurnOff" text="🔌 Apagar Todo" onAction="#onTurnRoomOff" styleClass="btn-danger"/>
+
+                        <Region HBox.hgrow="ALWAYS"/>
+
+                        <Label text="✨ Patrones: Composite (Zonas) + Factory Method + Adapter" styleClass="label-hint"/>
+                    </HBox>
+
+                    <!-- Contenedor con Scroll de Tarjetas de Dispositivos -->
+                    <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="transparent-scroll">
+                        <FlowPane fx:id="devicesFlowPane" hgap="15.0" vgap="15.0" prefWrapLength="1100.0">
+                            <padding>
+                                <Insets top="5.0" right="5.0" bottom="5.0" left="5.0"/>
+                            </padding>
+                        </FlowPane>
+                    </ScrollPane>
+
+                    <!-- Formulario Inferior: Crear Nuevo Dispositivo (Patron Factory Method) -->
+                    <TitledPane text="➕ Agregar Dispositivo a una Zona (Patrón Creacional: Factory Method)" expanded="false">
+                        <HBox spacing="12.0" alignment="CENTER_LEFT">
+                            <padding>
+                                <Insets top="10.0" right="10.0" bottom="10.0" left="10.0"/>
+                            </padding>
+                            <Label text="Tipo:"/>
+                            <ComboBox fx:id="cmbNewDeviceType" prefWidth="200.0"/>
+                            <Label text="Nombre:"/>
+                            <TextField fx:id="txtNewDeviceName" promptText="Ej. Lámpara Lectura" prefWidth="200.0"/>
+                            <Label text="Habitación / Zona:"/>
+                            <ComboBox fx:id="cmbNewDeviceRoom" prefWidth="180.0"/>
+                            <Button fx:id="btnCreateDevice" text="Crear con Factory" onAction="#onCreateDevice" styleClass="btn-primary"/>
+                        </HBox>
+                    </TitledPane>
+                </VBox>
+            </Tab>
+
+            <!-- PESTAÑA 2: ESCENAS Y AUTOMATIZACIÓN (COMMAND & MACRO COMMAND) -->
+            <Tab text="🎬 Escenas &amp; Automatización (Command)">
+                <SplitPane dividerPositions="0.6" VBox.vgrow="ALWAYS">
+                    <!-- Izquierda: Macro Escenas -->
+                    <VBox spacing="12.0">
+                        <padding>
+                            <Insets top="15.0" right="15.0" bottom="15.0" left="15.0"/>
+                        </padding>
+                        <Label text="Escenas Coordinadas (MacroCommand)" styleClass="section-header"/>
+                        <Label text="Ejecutan secuencias atómicas de comandos en múltiples dispositivos y admiten Deshacer/Rehacer completo." styleClass="label-hint"/>
+                        <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="transparent-scroll">
+                            <VBox fx:id="scenesContainer" spacing="10.0">
+                                <padding>
+                                    <Insets top="5.0" right="5.0" bottom="5.0" left="5.0"/>
+                                </padding>
+                            </VBox>
+                        </ScrollPane>
+                    </VBox>
+
+                    <!-- Derecha: Historial de Comandos Invocados -->
+                    <VBox spacing="12.0">
+                        <padding>
+                            <Insets top="15.0" right="15.0" bottom="15.0" left="15.0"/>
+                        </padding>
+                        <Label text="Pila de Invocación (Command Invoker)" styleClass="section-header"/>
+                        <Label text="Registro de órdenes ejecutadas, estados previos y soporte de reversión (Undo/Redo)." styleClass="label-hint"/>
+                        <ListView fx:id="lstCommandHistory" VBox.vgrow="ALWAYS" styleClass="custom-list"/>
+                    </VBox>
+                </SplitPane>
+            </Tab>
+
+            <!-- PESTAÑA 3: GESTIÓN ENERGÉTICA (STRATEGY) -->
+            <Tab text="⚡ Gestión Energética (Strategy)">
+                <VBox spacing="20.0">
+                    <padding>
+                        <Insets top="20.0" right="25.0" bottom="20.0" left="25.0"/>
+                    </padding>
+
+                    <Label text="Políticas de Optimización Energética (Patrón Strategy)" styleClass="section-header"/>
+                    <Label text="Permite intercambiar dinámicamente el algoritmo de gestión de consumo eléctrico según las prioridades del hogar." styleClass="label-hint"/>
+
+                    <!-- Selección de Estrategia -->
+                    <HBox spacing="25.0" styleClass="toolbar-panel">
+                        <padding>
+                            <Insets top="15.0" right="20.0" bottom="15.0" left="20.0"/>
+                        </padding>
+                        <RadioButton fx:id="rbEco" text="🌱 Modo Ecológico (Eco-Saver)" styleClass="radio-custom"/>
+                        <RadioButton fx:id="rbComfort" text="🛋️ Máximo Confort" styleClass="radio-custom"/>
+                        <RadioButton fx:id="rbNight" text="🌙 Noche &amp; Seguridad" styleClass="radio-custom"/>
+                    </HBox>
+
+                    <!-- Detalle de la Estrategia Activa -->
+                    <VBox spacing="10.0" styleClass="info-panel">
+                        <padding>
+                            <Insets top="15.0" right="15.0" bottom="15.0" left="15.0"/>
+                        </padding>
+                        <Label text="Descripción del Algoritmo Activo:" styleClass="label-bold"/>
+                        <Label fx:id="lblStrategyDesc" text="Detalles del algoritmo..." wrapText="true" styleClass="label-body"/>
+                        <Label fx:id="lblSavingsPercent" text="42% de Ahorro Estimado" styleClass="badge-power"/>
+                    </VBox>
+
+                    <!-- Consumo por Habitaciones -->
+                    <VBox spacing="8.0">
+                        <Label text="Desglose de Consumo en Tiempo Real por Zona (Composite Aggregation):" styleClass="label-bold"/>
+                        <VBox fx:id="roomConsumptionVBox" spacing="6.0"/>
+                    </VBox>
+                </VBox>
+            </Tab>
+
+            <!-- PESTAÑA 4: SISTEMA DE SEGURIDAD (STATE & MEDIATOR) -->
+            <Tab text="🛡️ Seguridad &amp; Alarma (State &amp; Mediator)">
+                <VBox spacing="20.0">
+                    <padding>
+                        <Insets top="20.0" right="25.0" bottom="20.0" left="25.0"/>
+                    </padding>
+
+                    <Label text="Centro de Control de Seguridad y Mediación de Eventos" styleClass="section-header"/>
+                    <Label text="Implementa el patrón State para transicionar entre estados (Desarmado, Armado Casa, Armado Fuera, Alarma) y Mediator para coordinar la respuesta ante siniestros." styleClass="label-hint"/>
+
+                    <!-- Estado Actual -->
+                    <VBox spacing="8.0" styleClass="info-panel">
+                        <padding>
+                            <Insets top="15.0" right="20.0" bottom="15.0" left="20.0"/>
+                        </padding>
+                        <Label text="Estado de Seguridad Actual (Patrón State):" styleClass="label-bold"/>
+                        <Label fx:id="lblSecStateName" text="DESARMADO"/>
+                        <Label fx:id="lblSecStateDesc" text="Descripción del estado..."/>
+                    </VBox>
+
+                    <!-- Controles de Cambio de Estado -->
+                    <HBox spacing="15.0" alignment="CENTER_LEFT" styleClass="toolbar-panel">
+                        <padding>
+                            <Insets top="15.0" right="20.0" bottom="15.0" left="20.0"/>
+                        </padding>
+                        <Button fx:id="btnArmHome" text="🏠 Armar Modo En Casa" onAction="#onArmHome" styleClass="btn-warning"/>
+                        <Button fx:id="btnArmAway" text="🚶 Armar Modo Fuera" onAction="#onArmAway" styleClass="btn-primary"/>
+
+                        <Separator orientation="VERTICAL"/>
+
+                        <Label text="PIN de Seguridad:"/>
+                        <PasswordField fx:id="txtPin" promptText="PIN (1234)" prefWidth="100.0"/>
+                        <Button fx:id="btnDisarm" text="🔓 Desarmar Sistema" onAction="#onDisarm" styleClass="btn-success"/>
+                    </HBox>
+
+                    <!-- Simulaciones de Sensores / Mediador -->
+                    <VBox spacing="10.0" styleClass="info-panel">
+                        <padding>
+                            <Insets top="15.0" right="20.0" bottom="15.0" left="20.0"/>
+                        </padding>
+                        <Label text="Simulación de Incidentes en Tiempo Real (Patrón Mediator):" styleClass="label-bold"/>
+                        <Label text="Pruebe cómo el Mediador intercepta las señales de los sensores y coordina de inmediato a los actuadores y al sistema de seguridad." styleClass="label-hint"/>
+
+                        <HBox spacing="15.0">
+                            <Button fx:id="btnSimulateMotion" text="🚶 Simular Detección de Movimiento (Patio)" onAction="#onSimulateMotion" styleClass="btn-action"/>
+                            <Button fx:id="btnSimulateSmoke" text="🔥 Simular Alerta de Humo (Cocina - Protocolo Evacuación)" onAction="#onSimulateSmoke" styleClass="btn-danger"/>
+                        </HBox>
+                    </VBox>
+                </VBox>
+            </Tab>
+
+            <!-- PESTAÑA 5: MONITOR DE EVENTOS (OBSERVER) -->
+            <Tab text="📡 Monitor de Eventos (Observer)">
+                <VBox spacing="12.0">
+                    <padding>
+                        <Insets top="15.0" right="20.0" bottom="15.0" left="20.0"/>
+                    </padding>
+
+                    <HBox alignment="CENTER_LEFT" spacing="15.0">
+                        <Label text="Registro de Notificaciones en Vivo (Patrón Observer)" styleClass="section-header"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button text="🗑 Limpiar Consola" onAction="#onClearEvents" styleClass="btn-action"/>
+                    </HBox>
+
+                    <Label text="Muestra los eventos transmitidos por el Sujeto central a todos los observadores registrados de forma desacoplada." styleClass="label-hint"/>
+                    <ListView fx:id="lstEvents" VBox.vgrow="ALWAYS" styleClass="custom-list"/>
+                </VBox>
+            </Tab>
+
+        </TabPane>
+    </center>
+
+</BorderPane>
+
