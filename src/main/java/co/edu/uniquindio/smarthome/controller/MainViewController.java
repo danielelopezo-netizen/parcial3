@@ -161,10 +161,10 @@ public class MainViewController implements IObserver {
 
         ISecurityState secState = hub.getSecurityContext().getState();
         lblSecurityBadge.setText(secState.getStateName());
-        lblSecurityBadge.setStyle("-fx-background-color: " + secState.getBadgeColorHex() + "; -fx-text-fill: white; -fx-padding: 4 12; -fx-background-radius: 12; -fx-font-weight: bold;");
+        lblSecurityBadge.setStyle("-fx-background-color: " + secState.getBadgeColorHex() + "; -fx-text-fill: white; -fx-padding: 4 10; -fx-background-radius: 4; -fx-font-weight: bold;");
 
         IEnergyStrategy strat = hub.getCurrentEnergyStrategy();
-        lblEnergyStrategyBadge.setText(strat.getIcon() + " " + strat.getName());
+        lblEnergyStrategyBadge.setText(strat.getName());
 
         btnUndo.setDisable(!hub.getCommandInvoker().canUndo());
         btnRedo.setDisable(!hub.getCommandInvoker().canRedo());
@@ -179,7 +179,7 @@ public class MainViewController implements IObserver {
 
         // 4. Tab Seguridad
         lblSecStateName.setText(secState.getStateName());
-        lblSecStateName.setStyle("-fx-text-fill: " + secState.getBadgeColorHex() + "; -fx-font-size: 18px; -fx-font-weight: bold;");
+        lblSecStateName.setStyle("-fx-text-fill: " + secState.getBadgeColorHex() + "; -fx-font-size: 16px; -fx-font-weight: bold;");
         lblSecStateDesc.setText(secState.getDescription());
     }
 
@@ -200,29 +200,29 @@ public class MainViewController implements IObserver {
     }
 
     private VBox createDeviceCard(SmartComponent component) {
-        VBox card = new VBox(8);
-        card.setPadding(new Insets(12));
-        card.setPrefWidth(260);
-        card.setStyle("-fx-background-color: #2b303c; -fx-background-radius: 10; -fx-border-color: #3f4555; -fx-border-radius: 10; -fx-border-width: 1;");
+        VBox card = new VBox(6);
+        card.setPadding(new Insets(10));
+        card.setPrefWidth(255);
+        card.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 6; -fx-border-color: #cbd5e1; -fx-border-radius: 6; -fx-border-width: 1; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.04), 4, 0, 0, 1);");
 
         // Header de la tarjeta: Icono y Nombre
-        HBox cardHeader = new HBox(10);
+        HBox cardHeader = new HBox(8);
         cardHeader.setAlignment(Pos.CENTER_LEFT);
 
         Label lblIcon = new Label(getComponentIcon(component));
-        lblIcon.setStyle("-fx-font-size: 22px;");
+        lblIcon.setStyle("-fx-font-size: 18px;");
 
-        VBox titleBox = new VBox(2);
+        VBox titleBox = new VBox(1);
         Label lblName = new Label(component.getName());
-        lblName.setStyle("-fx-text-fill: #FFFFFF; -fx-font-weight: bold; -fx-font-size: 13px;");
+        lblName.setStyle("-fx-text-fill: #1e293b; -fx-font-weight: bold; -fx-font-size: 13px;");
         Label lblRoom = new Label(component.getDisplayLocation());
-        lblRoom.setStyle("-fx-text-fill: #9CA3AF; -fx-font-size: 11px;");
+        lblRoom.setStyle("-fx-text-fill: #64748b; -fx-font-size: 11px;");
         titleBox.getChildren().addAll(lblName, lblRoom);
 
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        // Toggle Switch Encendido / Apagado (Command)
+        // Toggle Switch Encendido / Apagado
         ToggleButton toggle = new ToggleButton(component.isOn() ? "ON" : "OFF");
         toggle.setSelected(component.isOn());
         updateToggleStyle(toggle, component.isOn());
@@ -241,7 +241,7 @@ public class MainViewController implements IObserver {
         // Estado específico / detalles
         Label lblStatus = new Label();
         lblStatus.setWrapText(true);
-        lblStatus.setStyle("-fx-text-fill: #D1D5DB; -fx-font-size: 11px;");
+        lblStatus.setStyle("-fx-text-fill: #475569; -fx-font-size: 11px;");
 
         if (component instanceof SmartDevice dev) {
             lblStatus.setText(dev.getSpecificStatusDescription());
@@ -249,16 +249,16 @@ public class MainViewController implements IObserver {
 
         // Métricas de potencia
         Label lblWatts = new Label(String.format("Consumo: %.1f W", component.getPowerConsumptionWatts()));
-        lblWatts.setStyle("-fx-text-fill: #F59E0B; -fx-font-weight: bold; -fx-font-size: 11px;");
+        lblWatts.setStyle("-fx-text-fill: #d97706; -fx-font-weight: bold; -fx-font-size: 11px;");
 
         card.getChildren().addAll(cardHeader, new Separator(), lblStatus, lblWatts);
 
         // Controles interactivos específicos según el tipo
         if (component instanceof SmartLight light) {
-            HBox brightnessBox = new HBox(8);
+            HBox brightnessBox = new HBox(6);
             brightnessBox.setAlignment(Pos.CENTER_LEFT);
             Label bLabel = new Label("Brillo:");
-            bLabel.setStyle("-fx-text-fill: #9CA3AF; -fx-font-size: 11px;");
+            bLabel.setStyle("-fx-text-fill: #64748b; -fx-font-size: 11px;");
             Slider slider = new Slider(0, 100, light.getBrightnessPercentage());
             slider.valueProperty().addListener((obs, oldVal, newVal) -> {
                 light.setBrightnessPercentage(newVal.intValue());
@@ -271,9 +271,11 @@ public class MainViewController implements IObserver {
             HBox tempBox = new HBox(6);
             tempBox.setAlignment(Pos.CENTER_LEFT);
             Button btnMinus = new Button("-");
+            btnMinus.setStyle("-fx-background-color: #e2e8f0; -fx-font-weight: bold; -fx-padding: 2 8; -fx-background-radius: 3;");
             Button btnPlus = new Button("+");
+            btnPlus.setStyle("-fx-background-color: #e2e8f0; -fx-font-weight: bold; -fx-padding: 2 8; -fx-background-radius: 3;");
             Label lblTarget = new Label(String.format("%.1f°C", thermo.getTargetTemperature()));
-            lblTarget.setStyle("-fx-text-fill: #60A5FA; -fx-font-weight: bold;");
+            lblTarget.setStyle("-fx-text-fill: #2563eb; -fx-font-weight: bold;");
 
             btnMinus.setOnAction(e -> {
                 hub.executeCommand(new SetTemperatureCommand(thermo, thermo.getTargetTemperature() - 0.5));
@@ -288,8 +290,9 @@ public class MainViewController implements IObserver {
             card.getChildren().add(tempBox);
 
         } else if (component instanceof SmartLock lock) {
-            Button btnToggleLock = new Button(lock.isLocked() ? "Desbloquear 🔓" : "Bloquear 🔒");
+            Button btnToggleLock = new Button(lock.isLocked() ? "Desbloquear" : "Bloquear");
             btnToggleLock.setMaxWidth(Double.MAX_VALUE);
+            btnToggleLock.setStyle("-fx-background-color: #f1f5f9; -fx-text-fill: #1e293b; -fx-border-color: #cbd5e1; -fx-border-radius: 3; -fx-background-radius: 3; -fx-font-weight: bold;");
             btnToggleLock.setOnAction(e -> {
                 if (lock.isLocked()) {
                     hub.executeCommand(new UnlockDoorCommand(lock));
@@ -301,10 +304,10 @@ public class MainViewController implements IObserver {
             card.getChildren().add(btnToggleLock);
 
         } else if (component instanceof LegacyDeviceAdapter legacy) {
-            HBox levelBox = new HBox(8);
+            HBox levelBox = new HBox(6);
             levelBox.setAlignment(Pos.CENTER_LEFT);
             Label lLabel = new Label("Nivel A/C:");
-            lLabel.setStyle("-fx-text-fill: #9CA3AF; -fx-font-size: 11px;");
+            lLabel.setStyle("-fx-text-fill: #64748b; -fx-font-size: 11px;");
             Slider slider = new Slider(1, 5, legacy.getCoolingIntensity());
             slider.setSnapToTicks(true);
             slider.setMajorTickUnit(1);
@@ -322,10 +325,10 @@ public class MainViewController implements IObserver {
     private void updateToggleStyle(ToggleButton toggle, boolean on) {
         if (on) {
             toggle.setText("ON");
-            toggle.setStyle("-fx-background-color: #10B981; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6;");
+            toggle.setStyle("-fx-background-color: #16a34a; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 4; -fx-padding: 3 8;");
         } else {
             toggle.setText("OFF");
-            toggle.setStyle("-fx-background-color: #4B5563; -fx-text-fill: #D1D5DB; -fx-background-radius: 6;");
+            toggle.setStyle("-fx-background-color: #e2e8f0; -fx-text-fill: #475569; -fx-font-weight: bold; -fx-background-radius: 4; -fx-padding: 3 8;");
         }
     }
 
@@ -339,26 +342,26 @@ public class MainViewController implements IObserver {
     private void renderScenes() {
         scenesContainer.getChildren().clear();
         for (MacroSceneCommand scene : hub.getAvailableScenes()) {
-            HBox row = new HBox(15);
+            HBox row = new HBox(12);
             row.setAlignment(Pos.CENTER_LEFT);
-            row.setPadding(new Insets(12));
-            row.setStyle("-fx-background-color: #2b303c; -fx-background-radius: 8; -fx-border-color: #3f4555; -fx-border-radius: 8;");
+            row.setPadding(new Insets(10, 14, 10, 14));
+            row.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 6; -fx-border-color: #cbd5e1; -fx-border-radius: 6; -fx-border-width: 1; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.03), 3, 0, 0, 1);");
 
             Label lblIcon = new Label(scene.getIcon());
-            lblIcon.setStyle("-fx-font-size: 26px;");
+            lblIcon.setStyle("-fx-font-size: 20px;");
 
-            VBox info = new VBox(3);
+            VBox info = new VBox(2);
             Label lblTitle = new Label(scene.getSceneName());
-            lblTitle.setStyle("-fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px;");
+            lblTitle.setStyle("-fx-text-fill: #1e293b; -fx-font-weight: bold; -fx-font-size: 13px;");
             Label lblDesc = new Label(scene.getDescription());
-            lblDesc.setStyle("-fx-text-fill: #9CA3AF; -fx-font-size: 11px;");
+            lblDesc.setStyle("-fx-text-fill: #64748b; -fx-font-size: 11px;");
             info.getChildren().addAll(lblTitle, lblDesc);
 
             Region spacer = new Region();
             HBox.setHgrow(spacer, Priority.ALWAYS);
 
-            Button btnRun = new Button("Ejecutar Escena ▶");
-            btnRun.setStyle("-fx-background-color: #3B82F6; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 6 16; -fx-background-radius: 6;");
+            Button btnRun = new Button("Ejecutar");
+            btnRun.setStyle("-fx-background-color: #2563eb; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 5 14; -fx-background-radius: 4;");
             btnRun.setOnAction(e -> {
                 hub.executeCommand(scene);
                 refreshAllUI();
@@ -375,16 +378,16 @@ public class MainViewController implements IObserver {
             HBox row = new HBox(10);
             row.setAlignment(Pos.CENTER_LEFT);
             row.setPadding(new Insets(6, 12, 6, 12));
-            row.setStyle("-fx-background-color: #1F2937; -fx-background-radius: 6;");
+            row.setStyle("-fx-background-color: #ffffff; -fx-background-radius: 4; -fx-border-color: #e2e8f0; -fx-border-radius: 4; -fx-border-width: 1;");
 
-            Label lblName = new Label("🏠 " + room.getName());
-            lblName.setStyle("-fx-text-fill: #E5E7EB; -fx-font-weight: bold;");
+            Label lblName = new Label("Habitación: " + room.getName());
+            lblName.setStyle("-fx-text-fill: #1e293b; -fx-font-weight: bold;");
 
             Region spacer = new Region();
             HBox.setHgrow(spacer, Priority.ALWAYS);
 
             Label lblWatts = new Label(String.format("%.1f Watts", room.getPowerConsumptionWatts()));
-            lblWatts.setStyle("-fx-text-fill: #FBBF24; -fx-font-weight: bold;");
+            lblWatts.setStyle("-fx-text-fill: #d97706; -fx-font-weight: bold;");
 
             row.getChildren().addAll(lblName, spacer, lblWatts);
             roomConsumptionVBox.getChildren().add(row);
