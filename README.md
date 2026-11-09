@@ -38,30 +38,22 @@ Aplicación de escritorio interactiva desarrollada con **Java 17/21, JavaFX y FX
 
 ## 🚀 Instrucciones para Configurar y Ejecutar
 
-### Opción 1: Ejecución Rápida mediante Script (Windows)
-
-Haga doble clic en el archivo `ejecutar.bat` en la raíz del proyecto, o ejecute desde la terminal PowerShell / CMD:
-
-```bat
-.\ejecutar.bat
-```
-
-### Opción 2: Ejecución mediante Maven
+### Opción 1: Compilación y Ejecución mediante Maven
 
 1. Abra una terminal en la raíz del proyecto.
-2. Compile y ejecute la aplicación con el plugin oficial de JavaFX o exec:
+2. Compile y ejecute la aplicación con el comando:
 
 ```bash
 mvn clean compile exec:java
 ```
 
-O si tiene configurado el plugin de JavaFX:
+O utilizando el plugin oficial de JavaFX:
 
 ```bash
 mvn javafx:run
 ```
 
-### Opción 3: Ejecutar la Suite de Pruebas Unitarias
+### Opción 2: Ejecutar la Suite de Pruebas Unitarias
 
 Para verificar el correcto funcionamiento de todos los patrones de diseño y lógica de negocio:
 
@@ -76,7 +68,6 @@ mvn clean test
 ```
 parcial3/
 ├── pom.xml                                      # Configuración Maven y dependencias
-├── ejecutar.bat                                 # Script de inicio rápido en Windows
 ├── README.md                                    # Documentación completa del proyecto
 └── src/
     ├── main/
@@ -161,10 +152,4 @@ Para probar el desarme del sistema de seguridad o silenciar una alarma disparada
 
 - **Desarrollador:** [@danielelopezo-netizen](https://github.com/danielelopezo-netizen)
 
----
-
-## 🎥 Enlace de Video de Presentación en YouTube
-
-- **URL del Video:** *(Incluir aquí el enlace del video explicativo del equipo)*
-- **Contenido del Video:** Demostración del funcionamiento interactivo de la aplicación, explicación de la arquitectura y justificación en código de los 5 patrones de comportamiento y los patrones creacionales y estructurales implementados.
 
